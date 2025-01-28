@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/aboutmodel.dart';
 import 'keyvaluetext.dart';
 
-class InterestCard extends StatelessWidget {
-  const InterestCard({
+class AboutCard extends StatelessWidget {
+  const AboutCard({
     super.key,
     required this.aboutModel,
     required this.onPress
@@ -16,7 +17,6 @@ class InterestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> interest = aboutModel.profile!.interests!;
     return Column(
       children: [
         Padding(
@@ -24,7 +24,7 @@ class InterestCard extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                "Interest",
+                "About",
                 textScaler: TextScaler.linear(1.3),
               ),
               Spacer(),
@@ -34,23 +34,15 @@ class InterestCard extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 10.0, 20.0),
-          child:  Row(
+          child: Column(
             children: [
-              for ( var i in interest )
-                Container(
-                  margin: const EdgeInsets.all(5.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(5.0)
-                    ),
-
-                  ),
-                  child: Text(i.toString()),
-                )
+              KeyValueText(kunci:"Birthday", value: DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString()),
+              KeyValueText(kunci:"Horoscope", value: aboutModel.profile!.horoscope!),
+              KeyValueText(kunci:"Zodiac", value: aboutModel.profile!.zodiac!),
+              KeyValueText(kunci:"Height", value: "${aboutModel.profile!.height!} cm"),
+              KeyValueText(kunci:"Weight", value: "${aboutModel.profile!.weight!} kg"),
             ],
-          )
+          ),
         ),
       ],
     );
