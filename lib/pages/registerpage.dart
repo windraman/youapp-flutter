@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:youapp/components/passwordfield.dart';
 import 'package:youapp/models/loginform.dart';
 import 'package:youapp/models/registerform.dart';
 import 'package:youapp/pages/aboutpage.dart';
@@ -27,18 +28,34 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  RegisterformModel formModel = RegisterformModel(email: "",username: "", password: "");
+  bool _obscureText = true;
+
+  void _togglePasswordView() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+  RegisterformModel formModel = RegisterformModel(email: "",username: "", password: "", retype: "_");
   ApiService apiService = ApiService();
   final box = GetStorage();
   Future<void> _register() async {
-    log(jsonEncode(formModel).toString());
-    final response = await apiService.post('api/auth/register', formModel);
-    Map<String, dynamic> result = jsonDecode(response.body);
-    if(result.containsKey("token")){
-      box.write("token", result["token"]);
-      Get.to(AboutPage(title: "About"));
-    }
-
+    // if(formModel.password.toString() == formModel.retype.toString()) {
+      final response = await apiService.post('api/auth/register', formModel);
+      if (!mounted) return;
+      Map<String, dynamic> result = jsonDecode(response.body);
+      if (result.containsKey("token")) {
+        box.write("token", result["token"]);
+        Get.to(AboutPage(title: "About"));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.body)),
+        );
+      }
+    // }else{
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text("Password is not the same !")),
+    //   );
+    // }
   }
 
   @override
@@ -105,21 +122,29 @@ class _RegisterPageState extends State<RegisterPage> {
                         });
                       }
                   ),
-                  YouTextField(hint:'Create Password',
-                      keyboardType:  TextInputType.visiblePassword,
-                      onChanged: (value){
-                        setState(() {
-                          formModel.password = value;
-                        });
-                      }
+                  PasswordField(hint:'Create Password',
+                    keyboardType:  TextInputType.emailAddress,
+                    onChanged: (value){
+                      setState(() {
+                        formModel.password = value;
+                      });
+                    },
+                    visible: _obscureText,
+                    onEyePress: () {
+                      _togglePasswordView();
+                    } ,
                   ),
-                  YouTextField(hint:'Confirm Password',
-                      keyboardType:  TextInputType.visiblePassword,
-                      onChanged: (value){
-                        setState(() {
-                          formModel.password = value;
-                        });
-                      }
+                  PasswordField(hint:'Confirm Password',
+                    keyboardType:  TextInputType.emailAddress,
+                    onChanged: (value){
+                      setState(() {
+                        formModel.password = value;
+                      });
+                    },
+                    visible: _obscureText,
+                    onEyePress: () {
+                      _togglePasswordView();
+                    } ,
                   ),
                   YouButton(text: 'Register',onpress: _register),
                   Padding(

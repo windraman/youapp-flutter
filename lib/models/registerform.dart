@@ -2,11 +2,13 @@ class RegisterformModel {
   String email;
   String username;
   String password;
+  String retype;
 
   RegisterformModel({
     required this.email,
     required this.username,
-    required this.password
+    required this.password,
+    required this.retype
   });
 
 
@@ -14,7 +16,8 @@ class RegisterformModel {
     Map<String, dynamic> map = {
       'email': email,
       'username': username,
-      'password': password
+      'password': password,
+      'retype': retype
     };
 
     return map;

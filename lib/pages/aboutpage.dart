@@ -15,6 +15,7 @@ import 'package:youapp/pages/registerpage.dart';
 
 import '../components/aboutcard.dart';
 import '../components/keyvaluetext.dart';
+import '../components/multiselect.dart';
 import '../components/profilebanner.dart';
 import '../components/youbutton.dart';
 import '../components/youtextfield.dart';
@@ -51,6 +52,8 @@ class _AboutPageState extends State<AboutPage> {
     });
   }
 
+  List<String> _selectedItems = [];
+
   // void _loadUsers() async{
   //   var response = await apiService.fetchData("api/users");
   //   aboutModel = AboutModel.fromJson(json.decode(response));
@@ -68,11 +71,11 @@ class _AboutPageState extends State<AboutPage> {
     }else{
       profile["gender"] = aboutModel.profile?.gender;
     }
-    if(reactiveController.selectedBirthday.toString()!=""){
-      profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
-    } else{
-      profile["birthday"] = aboutModel.profile?.birthday;
-    }
+    // if(reactiveController.selectedBirthday.toString()!=""){
+    //   profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
+    // } else{
+    //   profile["birthday"] = aboutModel.profile?.birthday;
+    // }
     if(reactiveController.selectedHoroscope.toString()!=""){
       profile["horoscope"] = reactiveController.selectedHoroscope.toString();
     } else{
@@ -108,7 +111,7 @@ class _AboutPageState extends State<AboutPage> {
     if(profile.toString() == aboutModel.profile!.toJson().toString()){
       log("No change");
     }else{
-      apiService.patch("api/users/profile", user);
+      // apiService.patch("api/users/profile", user);
     }
 
     reactiveController.resetAbout();
@@ -216,7 +219,15 @@ class _AboutPageState extends State<AboutPage> {
                                   10.0, 30.0, 10.0, 0.0),
                               child: Column(
                                 children: [
-                                  InterestCard(aboutModel: aboutModel, onPress: () {})
+                                  Obx(()=>
+                                    InterestCard(
+                                        interest: reactiveController.selectedInterest.value as List<String>,
+                                        onPress: () {},
+                                        onMultiselect: (){
+                                          _showMultiSelect();
+                                        },
+                                    )
+                                  )
                                 ],
                               ),
 
@@ -291,6 +302,36 @@ class _AboutPageState extends State<AboutPage> {
             ),
           ),
     );
+  }
+
+  void _showMultiSelect() async {
+    // a list of selectable items
+    // these items can be hard-coded or dynamically fetched from a database/API
+    final List<String> items = [
+      'Music',
+      'Animation',
+      'Programming',
+      'Sport',
+      'Docker',
+      'MySQL'
+    ];
+
+    final List<String>? results = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelect(
+            items: items,
+            currentSelected: reactiveController.selectedInterest.value as List<String>
+        );
+      },
+    );
+
+    // Update UI
+    if (results != null) {
+      log(results.toString());
+      _updateProfile();
+      reactiveController.updateInterest(results);
+    }
   }
 }
 

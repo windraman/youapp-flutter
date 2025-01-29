@@ -41,7 +41,7 @@ class AboutModel {
 
 var emptyProfile = Profile(
   name: "",
-  gender: "",
+  gender: "Not Selected",
   birthday: "",
   horoscope: "",
   zodiac: "",

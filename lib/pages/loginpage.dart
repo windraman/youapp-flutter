@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:youapp/components/passwordfield.dart';
 import 'package:youapp/getx/reactive_controller.dart';
 import 'package:youapp/models/aboutmodel.dart';
 import 'package:youapp/models/loginform.dart';
@@ -28,6 +29,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _obscureText = true;
+
+  void _togglePasswordView() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
   LoginformModel formModel = LoginformModel(email: "", password: "");
   final ApiService apiService = Get.find();
   final box = GetStorage();
@@ -43,10 +51,11 @@ class _LoginPageState extends State<LoginPage> {
     if(result.containsKey("token")){
       box.write("token", result["token"]);
 
-      // final response = await apiService.fetchData("api/users");
-      // box.write("about", response);
       Get.to(AboutPage(title: "About"));
-      // Navigator.pushNamed(context, '/about');
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.body)),
+      );
     }
   }
 
@@ -103,14 +112,19 @@ class _LoginPageState extends State<LoginPage> {
                           formModel.email = value;
                         });
                       }
+
                   ),
-                  YouTextField(hint:'Enter Password',
+                  PasswordField(hint:'Enter Password',
                       keyboardType:  TextInputType.emailAddress,
                       onChanged: (value){
                         setState(() {
                           formModel.password = value;
                         });
-                      }
+                      },
+                    visible: _obscureText,
+                    onEyePress: () {
+                      _togglePasswordView();
+                    } ,
                   ),
                   YouButton(text: 'Login',onpress: _login),
                   Padding(

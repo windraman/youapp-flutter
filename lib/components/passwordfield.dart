@@ -1,18 +1,21 @@
 import 'dart:ffi';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class YouTextField extends StatelessWidget {
+class PasswordField extends StatelessWidget {
   final String hint;
   final TextInputType keyboardType;
   final ValueChanged<String> onChanged;
+  final bool visible;
+  final VoidCallback onEyePress;
 
-  const YouTextField({
+  const PasswordField({
     super.key,
     required this.hint,
     required this.keyboardType,
     required this.onChanged,
+    required this.visible,
+    required this.onEyePress
   });
 
   @override
@@ -21,6 +24,7 @@ class YouTextField extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
       child: TextField(
         onChanged: onChanged,
+        obscureText: visible,
         keyboardType: keyboardType,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -35,6 +39,10 @@ class YouTextField extends StatelessWidget {
           filled: true,
           fillColor: const Color(0xff1c3c41),
           hintText: hint,
+            suffixIcon: IconButton(
+              icon: Icon(visible ? Icons.visibility : Icons.visibility_off),
+              onPressed: onEyePress,
+            )
         ),
       ),
     );
