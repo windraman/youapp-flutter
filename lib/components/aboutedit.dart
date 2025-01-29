@@ -26,11 +26,7 @@ class AboutEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ReactiveController reactiveController = Get.put(ReactiveController());    var inputFormat = DateFormat('dd/MM/yyyy');
-    var birthday = aboutModel.profile!.birthday!;
-    // if(aboutModel.profile?.birthday != ""){
-    //   birthday = aboutModel.profile?.birthday;
-    // }
+    ReactiveController reactiveController = Get.put(ReactiveController());
     return Column(
       children: [
         Padding(

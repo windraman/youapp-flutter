@@ -19,6 +19,7 @@ class AboutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ReactiveController reactiveController = Get.put(ReactiveController());
     var birthday = aboutModel.profile!.birthday!;
     // if(aboutModel.profile?.birthday != ""){
     //   birthday = DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString();
@@ -43,7 +44,7 @@ class AboutCard extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 10.0, 20.0),
           child: Column(
             children: [
-              KeyValueText(kunci:"Birthday", value: birthday),
+              KeyValueText(kunci:"Birthday", value: reactiveController.selectedBirthday.value),
               KeyValueText(kunci:"Horoscope", value: aboutModel.profile!.horoscope!),
               KeyValueText(kunci:"Zodiac", value: aboutModel.profile!.zodiac!),
               KeyValueText(kunci:"Height", value: "${aboutModel.profile!.height!} cm"),

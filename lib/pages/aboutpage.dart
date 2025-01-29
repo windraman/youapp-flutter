@@ -45,6 +45,7 @@ class _AboutPageState extends State<AboutPage> {
   AboutModel aboutModel = AboutModel();
   final ApiService apiService = Get.find();
   bool _isEdit = false;
+  var inputFormat = DateFormat('dd/MM/yyyy');
 
   void _toggleEdit() {
     setState(() {
@@ -71,11 +72,11 @@ class _AboutPageState extends State<AboutPage> {
     }else{
       profile["gender"] = aboutModel.profile?.gender;
     }
-    // if(reactiveController.selectedBirthday.toString()!=""){
-    //   profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
-    // } else{
-    //   profile["birthday"] = aboutModel.profile?.birthday;
-    // }
+    if(reactiveController.selectedBirthday.toString()!=""){
+      profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
+    } else{
+      profile["birthday"] = aboutModel.profile?.birthday;
+    }
     if(reactiveController.selectedHoroscope.toString()!=""){
       profile["horoscope"] = reactiveController.selectedHoroscope.toString();
     } else{
@@ -111,7 +112,7 @@ class _AboutPageState extends State<AboutPage> {
     if(profile.toString() == aboutModel.profile!.toJson().toString()){
       log("No change");
     }else{
-      // apiService.patch("api/users/profile", user);
+      apiService.patch("api/users/profile", user);
     }
 
     reactiveController.resetAbout();
@@ -141,13 +142,14 @@ class _AboutPageState extends State<AboutPage> {
             } else if (snapshot.hasData) {
               aboutModel = AboutModel.fromJson(json.decode(snapshot.data.toString()));
               reactiveController.updateName(aboutModel.profile!.name.toString());
-              reactiveController.updateBirthday(aboutModel.profile!.birthday.toString());
+              reactiveController.updateBirthday(inputFormat.format(DateTime.parse(aboutModel.profile!.birthday.toString())).toString());
               reactiveController.updateGender(aboutModel.profile!.gender.toString());
               reactiveController.updateHeight(aboutModel.profile!.height!.toInt());
               reactiveController.updateWeight(aboutModel.profile!.weight!.toInt());
               reactiveController.updateHoroscope(aboutModel.profile!.horoscope.toString());
               reactiveController.updateZodiac(aboutModel.profile!.zodiac.toString());
               reactiveController.updateInterest(aboutModel.profile!.interests!.toList());
+              _selectedItems = aboutModel.profile!.interests!.toList();
               return Container(
                   decoration: const BoxDecoration(
                     color: Color(0xff09141a),
@@ -219,15 +221,13 @@ class _AboutPageState extends State<AboutPage> {
                                   10.0, 30.0, 10.0, 0.0),
                               child: Column(
                                 children: [
-                                  Obx(()=>
                                     InterestCard(
-                                        interest: reactiveController.selectedInterest.value as List<String>,
+                                        interest: _selectedItems,
                                         onPress: () {},
                                         onMultiselect: (){
                                           _showMultiSelect();
                                         },
                                     )
-                                  )
                                 ],
                               ),
 
@@ -257,9 +257,6 @@ class _AboutPageState extends State<AboutPage> {
     if(aboutModel.profile?.birthday != ""){
       initDate = DateTime.parse(aboutModel.profile!.birthday.toString());
       var birthday = DateTime.parse(aboutModel.profile!.birthday.toString());
-      var inputFormat = DateFormat('dd/MM/yyyy');
-      // aboutModel.profile?.birthday = inputFormat.format(birthday).toString();
-      // reactiveController.updateBirthday(inputFormat.format(birthday).toString());
     }
     showCupertinoModalPopup(
       context: context,
@@ -293,7 +290,6 @@ class _AboutPageState extends State<AboutPage> {
                     maximumDate: DateTime.now(),
                     mode: CupertinoDatePickerMode.date,
                     onDateTimeChanged: (DateTime dateTime) {
-                        var inputFormat = DateFormat('dd/MM/yyyy');
                         reactiveController.updateBirthday(inputFormat.format(dateTime).toString());
                     },
                   ),
@@ -328,9 +324,11 @@ class _AboutPageState extends State<AboutPage> {
 
     // Update UI
     if (results != null) {
-      log(results.toString());
+      setState(() {
+        _selectedItems = results;
+      });
+      // reactiveController.updateInterest(results);
       _updateProfile();
-      reactiveController.updateInterest(results);
     }
   }
 }

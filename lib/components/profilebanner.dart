@@ -77,28 +77,36 @@ class ProfileBanner extends StatelessWidget {
                         borderRadius: BorderRadius.all(
                             Radius.circular(25.0)
                         ),
+                          color: Colors.black26
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.candlestick_chart),
-                          Text(aboutModel.profile!.horoscope!),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.candlestick_chart),
+                            Text(aboutModel.profile!.horoscope!),
+                          ],
+                        ),
                       ),
                     ),
                     Container(
                       margin: const EdgeInsets.all(5.0),
                       padding: const EdgeInsets.all(3.0),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black26),
+                        border: Border.all(color: Colors.transparent),
                         borderRadius: BorderRadius.all(
                             Radius.circular(25.0)
                         ),
+                        color: Colors.black26
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.key),
-                          Text(aboutModel.profile!.zodiac!),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.key),
+                            Text(aboutModel.profile!.zodiac!),
+                          ],
+                        ),
                       ),
                     ),
                   ],

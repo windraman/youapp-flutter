@@ -40,7 +40,7 @@ class InterestCard extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 10.0, 20.0),
           child:  Column(
             children: [
-              Row(
+              Wrap(
                 children: [
                   if(interest.isNotEmpty)
                     for ( var i in interest )
@@ -48,13 +48,16 @@ class InterestCard extends StatelessWidget {
                         margin: const EdgeInsets.all(5.0),
                         padding: const EdgeInsets.all(3.0),
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white),
+                          border: Border.all(color: Colors.transparent),
                           borderRadius: BorderRadius.all(
-                              Radius.circular(5.0)
+                              Radius.circular(25.0)
                           ),
-
+                          color: Colors.blueGrey
                         ),
-                        child: Text(i.toString()),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text(i.toString()),
+                        ),
                       ),
                   if(interest.isEmpty)
                   Text("Add in your interest get a better match.")

@@ -197,7 +197,6 @@ class KeyValueField extends StatelessWidget {
                         textScaler: TextScaler.linear(0.9),
                       )
                   )
-
                 ),
               ),
             ),
