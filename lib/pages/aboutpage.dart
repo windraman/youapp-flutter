@@ -3,10 +3,13 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:youapp/components/aboutedit.dart';
 import 'package:youapp/components/interstcard.dart';
+import 'package:youapp/getx/reactive_controller.dart';
 import 'package:youapp/models/aboutmodel.dart';
+import 'package:youapp/models/basemodel.dart';
 import 'package:youapp/models/loginform.dart';
 import 'package:youapp/pages/registerpage.dart';
 
@@ -37,11 +40,10 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  final box = GetStorage();
+  ReactiveController reactiveController = Get.put(ReactiveController());
   AboutModel aboutModel = AboutModel();
-  ApiService apiService = ApiService();
+  final ApiService apiService = Get.find();
   bool _isEdit = false;
-  DateTime _selectedDate = DateTime.now();
 
   void _toggleEdit() {
     setState(() {
@@ -49,144 +51,205 @@ class _AboutPageState extends State<AboutPage> {
     });
   }
 
+  // void _loadUsers() async{
+  //   var response = await apiService.fetchData("api/users");
+  //   aboutModel = AboutModel.fromJson(json.decode(response));
+  // }
+
+  void _updateProfile() async{
+    Map<String, dynamic>  profile = {};
+    if(reactiveController.selectedName.toString()!=""){
+      profile["name"] = reactiveController.selectedName.toString();
+    } else{
+      profile["name"] = aboutModel.profile?.name;
+    }
+    if(reactiveController.selectedGender.toString()!="Not Selected"){
+      profile["gender"] = reactiveController.selectedGender.toString();
+    }else{
+      profile["gender"] = aboutModel.profile?.gender;
+    }
+    if(reactiveController.selectedBirthday.toString()!=""){
+      profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
+    } else{
+      profile["birthday"] = aboutModel.profile?.birthday;
+    }
+    if(reactiveController.selectedHoroscope.toString()!=""){
+      profile["horoscope"] = reactiveController.selectedHoroscope.toString();
+    } else{
+      profile["horoscope"] = aboutModel.profile?.horoscope;
+    }
+    if(reactiveController.selectedZodiac.toString()!=""){
+      profile["zodiac"] = reactiveController.selectedZodiac.toString();
+    } else{
+      profile["zodiac"] = aboutModel.profile?.zodiac;
+    }
+    if(reactiveController.selectedHeight.toInt() > 0){
+      profile["height"] = reactiveController.selectedHeight.toInt();
+    }else{
+      profile["height"] = aboutModel.profile?.height;
+    }
+    if(reactiveController.selectedWeight.toInt()>0){
+      profile["weight"] = reactiveController.selectedWeight.toInt();
+    }else{
+      profile["weight"] = aboutModel.profile?.weight;
+    }
+    if(reactiveController.selectedInterest.isNotEmpty){
+      profile["interests"] = reactiveController.selectedInterest.toList();
+    }else{
+      profile["interests"] = aboutModel.profile?.interests;
+    }
+    Map<String, dynamic>  user = {};
+    user['profile'] = profile;
+    log(profile.toString());
+    log(aboutModel.profile!.toJson().toString());
+
+    log((profile.toString()==aboutModel.profile!.toJson().toString()).toString());
+
+    if(profile.toString() == aboutModel.profile!.toJson().toString()){
+      log("No change");
+    }else{
+      apiService.patch("api/users/profile", user);
+    }
+
+    reactiveController.resetAbout();
+  }
+
   @override
   void initState() {
     super.initState();
-    aboutModel = AboutModel.fromJson(json.decode(box.read('about')));
-
-  }
-
-
-  Future<void> _loadProfile() async {
-    final response = await apiService.fetchData("api/users");
-
-    aboutModel = AboutModel.fromJson(json.decode(response));
   }
 
   @override
   Widget build(BuildContext context) {
+    // _loadUsers();
     return Scaffold(
       appBar: AppBar(
-        title: Text("@${aboutModel.username.toString()}"),
+        title: Text("${reactiveController.selectedName}"),
         actions: [
           IconButton(onPressed: (){}, icon: Icon(Icons.list))
         ],
       ),
       body: SingleChildScrollView(
-
-        child: Container(
-            decoration: const BoxDecoration(
-              color:Color(0xff09141a) ,
-            ),
-            child: Column(
-              children: [
-                // Padding(
-                //   padding: const EdgeInsets.fromLTRB(10.0, 50.0, 0.0, 0.0),
-                //   child: Row(
-                //     children: [
-                //       InkWell(
-                //         onTap: () {
-                //           Navigator.pop(context);
-                //         },
-                //         child: const Row(
-                //             mainAxisAlignment: MainAxisAlignment.start,
-                //             children: [
-                //               Icon(Icons.arrow_back_ios),
-                //               Text(
-                //                 "Back",
-                //                 textScaler: TextScaler.linear(1.1),
-                //               ),
-                //             ]
-                //         ),
-                //       ),
-                //       Spacer(),
-                //       Text("@${aboutModel.username.toString()}"),
-                //       Spacer(),
-                //       Icon(Icons.menu),
-                //     ],
-                //   ),
-                // ),
-                ProfileBanner(aboutModel: aboutModel),
-                Column(
-                  children: [
-                    Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                                Colors.black26,
-                                Colors.black87,
-                              ],
-                              begin: Alignment.centerRight,
-                              end: Alignment.centerLeft
-                          ),
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey,
-                        ),
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 0.0),
-                        child: Column(
+        child: FutureBuilder<String>(
+          future: apiService.fetchData("api/users"),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: const CircularProgressIndicator());
+            } else if (snapshot.hasData) {
+              aboutModel = AboutModel.fromJson(json.decode(snapshot.data.toString()));
+              reactiveController.updateName(aboutModel.profile!.name.toString());
+              reactiveController.updateBirthday(aboutModel.profile!.birthday.toString());
+              reactiveController.updateGender(aboutModel.profile!.gender.toString());
+              reactiveController.updateHeight(aboutModel.profile!.height!.toInt());
+              reactiveController.updateWeight(aboutModel.profile!.weight!.toInt());
+              reactiveController.updateHoroscope(aboutModel.profile!.horoscope.toString());
+              reactiveController.updateZodiac(aboutModel.profile!.zodiac.toString());
+              reactiveController.updateInterest(aboutModel.profile!.interests!.toList());
+              return Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xff09141a),
+                  ),
+                  child: Column(
+                    children: [
+                      ProfileBanner(aboutModel: aboutModel),
+                      if(aboutModel.profile != null)
+                        Column(
                           children: [
-                            if(_isEdit)
-                              AboutCard(aboutModel: aboutModel, onPress: () {
-                                _toggleEdit();
-                              }),
-                            if(!_isEdit)
-                            AboutEdit(
-                                aboutModel: aboutModel,
-                                onPress: () {
-                                  _toggleEdit();
-                                },
-                                onToggle: (){
-                                  _showDatePicker(context);
-                                }
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Colors.black26,
+                                      Colors.black87,
+                                    ],
+                                    begin: Alignment.centerRight,
+                                    end: Alignment.centerLeft
+                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.grey,
+                              ),
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.fromLTRB(
+                                  10.0, 30.0, 10.0, 0.0),
+                              child: Column(
+                                children: [
+                                  if(!_isEdit)
+                                    AboutCard(aboutModel: aboutModel, onPress: () {
+                                      _toggleEdit();
+                                    }),
+                                  if(_isEdit)
+                                    AboutEdit(
+                                      aboutModel: aboutModel,
+                                      onPress: () {
+                                        _updateProfile();
+                                        _toggleEdit();
+                                      },
+                                      onToggle: () {
+                                        _showDatePicker(context);
+                                      },
+                                      updatedModel: (value) {},
+                                    ),
+                                ],
+                              ),
+
                             ),
                           ],
                         ),
+                      if(aboutModel.profile != null)
+                        Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Colors.black26,
+                                      Colors.black87,
+                                    ],
+                                    begin: Alignment.centerRight,
+                                    end: Alignment.centerLeft
+                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.grey,
+                              ),
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.fromLTRB(
+                                  10.0, 30.0, 10.0, 0.0),
+                              child: Column(
+                                children: [
+                                  InterestCard(aboutModel: aboutModel, onPress: () {})
+                                ],
+                              ),
 
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.black26,
-                              Colors.black87,
-                            ],
-                            begin: Alignment.centerRight,
-                            end: Alignment.centerLeft
+                            ),
+                          ],
                         ),
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Colors.grey,
-                      ),
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 0.0),
-                      child: Column(
-                        children: [
-                          InterestCard(aboutModel: aboutModel, onPress: (){})
-                        ],
-                      ),
-
-                    ),
-                  ],
-                ),
-
-              ],
-            )
+                    ],
+                  )
+              );
+            } else {
+              return Center(child: const Text("Error fething data !"));
+            }
+          }
         ),
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      )
     );
+  }
+
+  String reformatDate(String date){
+    var split = date.split("/");
+    return "${split[2]}-${split[1]}-${split[0]}";
   }
 
   // Function to show Cupertino Date Picker
   void _showDatePicker(BuildContext context) {
+    DateTime initDate = DateTime.now();
+    if(aboutModel.profile?.birthday != ""){
+      initDate = DateTime.parse(aboutModel.profile!.birthday.toString());
+      var birthday = DateTime.parse(aboutModel.profile!.birthday.toString());
+      var inputFormat = DateFormat('dd/MM/yyyy');
+      // aboutModel.profile?.birthday = inputFormat.format(birthday).toString();
+      // reactiveController.updateBirthday(inputFormat.format(birthday).toString());
+    }
     showCupertinoModalPopup(
       context: context,
       builder: (_) =>
@@ -214,12 +277,13 @@ class _AboutPageState extends State<AboutPage> {
                 // Date Picker
                 Expanded(
                   child: CupertinoDatePicker(
-                    initialDateTime: _selectedDate,
+                    initialDateTime: initDate,
+                    minimumDate: DateTime.parse("1965-01-01"),
+                    maximumDate: DateTime.now(),
                     mode: CupertinoDatePickerMode.date,
                     onDateTimeChanged: (DateTime dateTime) {
-                      setState(() {
-                        aboutModel.profile?.birthday = dateTime as String?;
-                      });
+                        var inputFormat = DateFormat('dd/MM/yyyy');
+                        reactiveController.updateBirthday(inputFormat.format(dateTime).toString());
                     },
                   ),
                 ),

@@ -1,26 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:youapp/components/keyvaluefield.dart';
 
+import '../getx/reactive_controller.dart';
 import '../models/aboutmodel.dart';
-import 'keyvaluetext.dart';
 
 class AboutEdit extends StatelessWidget {
   const AboutEdit({
     super.key,
     required this.aboutModel,
     required this.onPress,
-    required this.onToggle
+    required this.onToggle,
+    required this.updatedModel
   });
 
   final AboutModel aboutModel;
   final VoidCallback onPress;
   final VoidCallback onToggle;
+  final ValueChanged<AboutModel> updatedModel;
+
+
+
 
   @override
   Widget build(BuildContext context) {
-    var inputFormat = DateFormat('dd/MM/yyyy');
+    ReactiveController reactiveController = Get.put(ReactiveController());    var inputFormat = DateFormat('dd/MM/yyyy');
+    var birthday = aboutModel.profile!.birthday!;
+    // if(aboutModel.profile?.birthday != ""){
+    //   birthday = aboutModel.profile?.birthday;
+    // }
     return Column(
       children: [
         Padding(
@@ -34,7 +44,6 @@ class AboutEdit extends StatelessWidget {
               Spacer(),
               TextButton(
                 onPressed: (){
-                  //update api
                   onPress();
                 },
                 child: Text(
@@ -73,14 +82,48 @@ class AboutEdit extends StatelessWidget {
                   ],
                 ),
               ),
-              KeyValueField(kunci:"Display Name", value: aboutModel.profile!.name!,type:  'text', enabled: true, onToggle: (){}, fontSize: 12),
-              KeyValueField(kunci:"Gender", value: aboutModel.profile!.gender!,type:  'dropdown', enabled: true, onToggle: (){}, fontSize: 12),
-              KeyValueField(kunci:"Birthday", value: DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString(),type:  'date', enabled: true, onToggle: onToggle, fontSize: 12),
-
-              KeyValueField(kunci:"Horoscope", value: aboutModel.profile!.horoscope!, type:  'text', enabled: false, onToggle: (){}, fontSize: 12),
-              KeyValueField(kunci:"Zodiac", value: aboutModel.profile!.zodiac!,type: 'text', enabled: false, onToggle: (){}, fontSize: 12),
-              KeyValueField(kunci:"Height", value: "${aboutModel.profile!.height!}",type:  'number', enabled: true, onToggle: (){}, fontSize: 12),
-              KeyValueField(kunci:"Weight", value: "${aboutModel.profile!.weight!}",type:  'number', enabled: true, onToggle: (){}, fontSize: 12),
+              KeyValueField(
+                  kunci:"Display Name",
+                  value: aboutModel.profile!.name!,
+                  type:  'text',
+                  enabled: true,
+                  onToggle: (){},
+                  fontSize: 12,
+              ),
+              KeyValueField(
+                  kunci:"Gender",
+                  value: "${reactiveController.selectedGender}",
+                  type:  'dropdown',
+                  enabled: true,
+                  onToggle: (){},
+                  fontSize: 12,
+              ),
+                KeyValueField(
+                    kunci:"Birthday",
+                    value: "",
+                    type:  'date',
+                    enabled: true,
+                    onToggle: onToggle,
+                    fontSize: 12,
+                ),
+              // KeyValueField(kunci:"Horoscope", value: aboutModel.profile!.horoscope!, type:  'text', enabled: false, onToggle: (){}, fontSize: 12),
+              // KeyValueField(kunci:"Zodiac", value: aboutModel.profile!.zodiac!,type: 'text', enabled: false, onToggle: (){}, fontSize: 12),
+              KeyValueField(
+                  kunci:"Height",
+                  value: "${reactiveController.selectedHeight}"
+                  ,type:  'height',
+                  enabled: true,
+                  onToggle: (){},
+                  fontSize: 12,
+              ),
+              KeyValueField(
+                  kunci:"Weight",
+                  value: "${reactiveController.selectedWeight}",
+                  type:  'weight',
+                  enabled: true,
+                  onToggle: (){},
+                  fontSize: 12,
+              ),
             ],
           ),
         ),

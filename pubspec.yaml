@@ -39,6 +39,7 @@ dependencies:
   get_storage: ^2.0.4
   intl: ^0.20.2
   multi_dropdown: ^3.0.1
+  get:
 
 dev_dependencies:
   flutter_test:

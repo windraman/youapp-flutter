@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:youapp/getx/reactive_controller.dart';
 import 'package:youapp/models/aboutmodel.dart';
 import 'package:youapp/models/loginform.dart';
 import 'package:youapp/pages/aboutpage.dart';
@@ -27,7 +29,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   LoginformModel formModel = LoginformModel(email: "", password: "");
-  ApiService apiService = ApiService();
+  final ApiService apiService = Get.find();
   final box = GetStorage();
 
   Future<void> _login() async {
@@ -41,21 +43,17 @@ class _LoginPageState extends State<LoginPage> {
     if(result.containsKey("token")){
       box.write("token", result["token"]);
 
-      final response = await apiService.fetchData("api/users");
-
-      box.write("about", response);
-
-      Navigator.pushNamed(context, '/about');
+      // final response = await apiService.fetchData("api/users");
+      // box.write("about", response);
+      Get.to(AboutPage(title: "About"));
+      // Navigator.pushNamed(context, '/about');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // ReactiveController reactiveController = Get.put(ReactiveController());
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   title: Text(widget.title),
-      // ),
       body: Container(
           decoration: const BoxDecoration(
             gradient: RadialGradient(
@@ -123,10 +121,11 @@ class _LoginPageState extends State<LoginPage> {
                         const Text("No Account ?"),
                         TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => RegisterPage(title: 'Register')),
-                              );
+                              Get.to(RegisterPage(title: "register"));
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => RegisterPage(title: 'Register')),
+                              // );
                             },
                             child: const Text("register here")
                         )

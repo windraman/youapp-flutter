@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../getx/reactive_controller.dart';
 import '../models/aboutmodel.dart';
 import 'keyvaluetext.dart';
 
@@ -17,6 +19,10 @@ class AboutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var birthday = aboutModel.profile!.birthday!;
+    // if(aboutModel.profile?.birthday != ""){
+    //   birthday = DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString();
+    // }
     return Column(
       children: [
         Padding(
@@ -32,11 +38,12 @@ class AboutCard extends StatelessWidget {
             ],
           ),
         ),
+        if(aboutModel.profile?.name!="")
         Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 10.0, 20.0),
           child: Column(
             children: [
-              KeyValueText(kunci:"Birthday", value: DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString()),
+              KeyValueText(kunci:"Birthday", value: birthday),
               KeyValueText(kunci:"Horoscope", value: aboutModel.profile!.horoscope!),
               KeyValueText(kunci:"Zodiac", value: aboutModel.profile!.zodiac!),
               KeyValueText(kunci:"Height", value: "${aboutModel.profile!.height!} cm"),
@@ -44,6 +51,11 @@ class AboutCard extends StatelessWidget {
             ],
           ),
         ),
+        if(aboutModel.profile?.name=="")
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 20.0),
+          child: Text("Add your data to help other to know you better"),
+        )
       ],
     );
   }

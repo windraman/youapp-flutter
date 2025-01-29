@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class AboutModel {
   String? sId;
   String? username;
@@ -20,8 +22,7 @@ class AboutModel {
     email = json['email'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    profile =
-    json['profile'] != null ? Profile.fromJson(json['profile']) : null;
+    profile = json['profile'] != null ? Profile.fromJson(json['profile']) : emptyProfile;
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +38,17 @@ class AboutModel {
     return data;
   }
 }
+
+var emptyProfile = Profile(
+  name: "",
+  gender: "",
+  birthday: "",
+  horoscope: "",
+  zodiac: "",
+  height: 0,
+  weight: 0,
+  interests: []
+);
 
 class Profile {
   String? name;

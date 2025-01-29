@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:youapp/models/loginform.dart';
 import 'package:youapp/models/registerform.dart';
+import 'package:youapp/pages/aboutpage.dart';
 import 'package:youapp/pages/loginpage.dart';
 
 import '../components/youbutton.dart';
@@ -30,12 +32,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final box = GetStorage();
   Future<void> _register() async {
     log(jsonEncode(formModel).toString());
-    final response = await apiService.post('api/register', formModel);
+    final response = await apiService.post('api/auth/register', formModel);
+    Map<String, dynamic> result = jsonDecode(response.body);
+    if(result.containsKey("token")){
+      box.write("token", result["token"]);
+      Get.to(AboutPage(title: "About"));
+    }
 
-    // Map<String, dynamic> result = jsonDecode(response.body);
-    // if(result.containsKey("token")){
-    //   // to get user
-    // }
   }
 
   @override
@@ -118,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         });
                       }
                   ),
-                  YouButton(text: 'Login',onpress: _register),
+                  YouButton(text: 'Register',onpress: _register),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 30, 20, 5),
                     child: Row(
@@ -127,10 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         const Text("Have an Account?"),
                         TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => LoginPage(title: 'Login')),
-                              );
+                              Get.to(LoginPage(title: "login"));
                             },
                             child: const Text("Login here")
                         )

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
-class ApiService {
+class ApiService extends GetxService {
+  String token = "";
 
   Uri _getUri(String endpoint) {
     return Uri.parse('http://192.168.100.189:3000/$endpoint');
@@ -11,6 +13,10 @@ class ApiService {
 
   String _accessToken() {
     return "";
+  }
+
+  void setToken(String token){
+    token = token;
   }
 
   Map<String, String> _headers() {

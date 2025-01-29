@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../getx/reactive_controller.dart';
 import '../models/aboutmodel.dart';
 
 class ProfileBanner extends StatelessWidget {
@@ -13,6 +15,11 @@ class ProfileBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ReactiveController reactiveController = Get.put(ReactiveController());
+    var age = "";
+    if(aboutModel.profile?.birthday != ""){
+      calculateAge(DateTime.parse(aboutModel.profile!.birthday!));
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(10.0, 50.0, 10.0, 0.0),
       child: DecoratedBox(
@@ -36,7 +43,7 @@ class ProfileBanner extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  "\n\n\n\n\n",
+                  "\n\n\n\n",
                 ),
                 Container(
                   margin: const EdgeInsets.all(10.0),
@@ -45,21 +52,21 @@ class ProfileBanner extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "@${aboutModel.username!} ( ${calculateAge(DateTime.parse(aboutModel.profile!.birthday!))} )",
-                          ),
+                              "@${aboutModel.username!} ( $age )",
+                          )
                         ],
                       ),
                       Row(
                         children: [
                           Text(
-                            aboutModel.profile!.gender!,
+                            "${aboutModel.profile?.gender}",
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-
+                if(aboutModel.profile?.horoscope != "")
                 Row(
                   children: [
                     Container(
