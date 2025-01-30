@@ -66,8 +66,33 @@ class AboutEdit extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage("assets/wahyu.jpg"), fit: BoxFit.cover),
+                              image: NetworkImage('http://192.168.100.189:3000/${aboutModel.profile?.image}'),
+                              fit: BoxFit.cover
+                          ),
                           borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: IconButton(
+                          onPressed: (){},
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.resolveWith((states) {
+                              // If the button is pressed, return green, otherwise blue
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.green;
+                              }
+                              return Colors.transparent;
+                            }),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      side: BorderSide(color: Colors.transparent)
+                                  )
+                              )
+                          ),
+                          icon: Icon(
+                            size: 30,
+                              Icons.add
+                          ),
+
                         ),
                       ),
                     ),

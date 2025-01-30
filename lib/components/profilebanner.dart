@@ -18,14 +18,16 @@ class ProfileBanner extends StatelessWidget {
     ReactiveController reactiveController = Get.put(ReactiveController());
     var age = "";
     if(aboutModel.profile?.birthday != ""){
-      calculateAge(DateTime.parse(aboutModel.profile!.birthday!));
+      age = calculateAge(DateTime.parse(aboutModel.profile!.birthday!)).toString();
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(10.0, 50.0, 10.0, 0.0),
       child: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage("assets/wahyu.jpg"), fit: BoxFit.cover),
+              image: NetworkImage('http://192.168.100.189:3000/${aboutModel.profile?.image}'),
+              fit: BoxFit.cover
+          ),
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Container(

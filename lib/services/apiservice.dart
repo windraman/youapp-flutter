@@ -108,10 +108,11 @@ class ApiService extends GetxService {
         body: body);
   }
 
-  Future<http.Response> updateProfileImage(String imagePath, endpoint) async {
+  Future<http.Response> updateProfileImage(String imagePath, endpoint, String branch) async {
     final uri = _getUri(endpoint);
     var request = http.MultipartRequest('PATCH', uri);
     request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+    _headers().addAll({"branch":branch});
     request.headers.addAll(_headers());
 
     _logRequest(uri, {"imagePath": imagePath});

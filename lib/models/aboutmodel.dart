@@ -47,7 +47,8 @@ var emptyProfile = Profile(
   zodiac: "",
   height: 0,
   weight: 0,
-  interests: []
+  interests: [],
+    image: ""
 );
 
 class Profile {
@@ -59,6 +60,7 @@ class Profile {
   int? height;
   int? weight;
   List<String>? interests;
+  String? image;
 
   Profile(
       {this.name,
@@ -68,7 +70,8 @@ class Profile {
         this.zodiac,
         this.height,
         this.weight,
-        this.interests});
+        this.interests,
+      this.image});
 
   Profile.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -79,6 +82,7 @@ class Profile {
     height = json['height'];
     weight = json['weight'];
     interests = json['interests'].cast<String>();
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -91,6 +95,7 @@ class Profile {
     data['height'] = height;
     data['weight'] = weight;
     data['interests'] = interests;
+    data['image'] = image;
     return data;
   }
 }
