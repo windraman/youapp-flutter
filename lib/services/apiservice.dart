@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'dart:io';
 
 class ApiService extends GetxService {
   String token = "";
@@ -19,11 +21,12 @@ class ApiService extends GetxService {
     token = token;
   }
 
-  Map<String, String> _headers() {
+  Map<String, String> _headers(String branch) {
     final box = GetStorage();
     return {
       "Content-Type": "application/json",
       "Authorization": "Bearer ${ box.read('token').toString()}",
+      "branch": branch,
     };
   }
 
@@ -65,12 +68,12 @@ class ApiService extends GetxService {
 
   Future<http.Response> get(String endpoint) async {
     Uri uri = _getUri(endpoint);
-    return _sendRequest(() => http.get(uri, headers: _headers()), uri);
+    return _sendRequest(() => http.get(uri, headers: _headers("")), uri);
   }
 
   Future<String> fetchData(String endpoint) async {
     Uri uri = _getUri(endpoint);
-    final response = await http.get(uri, headers: _headers());
+    final response = await http.get(uri, headers: _headers(""));
 
     // Check the status code and return the body if successful
     if (response.statusCode == 200) {
@@ -83,27 +86,27 @@ class ApiService extends GetxService {
 
   Future<http.Response> post(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
-    return _sendRequest(() => http.post(uri, headers: _headers(), body: jsonEncode(body)), uri, body: body);
+    return _sendRequest(() => http.post(uri, headers: _headers(""), body: jsonEncode(body)), uri, body: body);
   }
 
   Future<http.Response> put(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
     return _sendRequest(
-            () => http.put(uri, headers: _headers(), body: jsonEncode(body)), uri,
+            () => http.put(uri, headers: _headers(""), body: jsonEncode(body)), uri,
         body: body);
   }
 
   Future<http.Response> patch(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
     return _sendRequest(
-            () => http.patch(uri, headers: _headers(), body: jsonEncode(body)), uri,
+            () => http.patch(uri, headers: _headers(""), body: jsonEncode(body)), uri,
         body: body);
   }
 
   Future<http.Response> delete(String endpoint, {dynamic body}) async {
     Uri uri = _getUri(endpoint);
     return _sendRequest(
-            () => http.delete(uri, headers: _headers(), body: jsonEncode(body)),
+            () => http.delete(uri, headers: _headers(""), body: jsonEncode(body)),
         uri,
         body: body);
   }
@@ -111,11 +114,11 @@ class ApiService extends GetxService {
   Future<http.Response> updateProfileImage(String imagePath, endpoint, String branch) async {
     final uri = _getUri(endpoint);
     var request = http.MultipartRequest('PATCH', uri);
-    request.files.add(await http.MultipartFile.fromPath('image', imagePath));
-    _headers().addAll({"branch":branch});
-    request.headers.addAll(_headers());
 
-    _logRequest(uri, {"imagePath": imagePath});
+    request.headers.addAll(_headers(branch));
+    request.files.add(await http.MultipartFile.fromPath('file', imagePath,contentType: MediaType("image", "jpeg")));
+
+    _logRequest(uri, {"file": imagePath});
 
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);

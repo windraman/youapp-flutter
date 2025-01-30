@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:youapp/components/keyvaluefield.dart';
 
@@ -13,16 +14,13 @@ class AboutEdit extends StatelessWidget {
     required this.aboutModel,
     required this.onPress,
     required this.onToggle,
-    required this.updatedModel
+    required this.onImagePicker
   });
 
   final AboutModel aboutModel;
   final VoidCallback onPress;
   final VoidCallback onToggle;
-  final ValueChanged<AboutModel> updatedModel;
-
-
-
+  final VoidCallback onImagePicker;
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +64,15 @@ class AboutEdit extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage('http://192.168.100.189:3000/${aboutModel.profile?.image}'),
+                              image: NetworkImage('http://192.168.100.189:3000/${reactiveController.profileImage.value}'),
                               fit: BoxFit.cover
                           ),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: IconButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            onImagePicker();
+                          },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.resolveWith((states) {
                               // If the button is pressed, return green, otherwise blue
@@ -109,7 +109,7 @@ class AboutEdit extends StatelessWidget {
                   type:  'text',
                   enabled: true,
                   onToggle: (){},
-                  fontSize: 12,
+                  fontSize: 13,
               ),
               KeyValueField(
                   kunci:"Gender",
@@ -125,7 +125,7 @@ class AboutEdit extends StatelessWidget {
                     type:  'date',
                     enabled: true,
                     onToggle: onToggle,
-                    fontSize: 12,
+                    fontSize: 13,
                 ),
               // KeyValueField(kunci:"Horoscope", value: aboutModel.profile!.horoscope!, type:  'text', enabled: false, onToggle: (){}, fontSize: 12),
               // KeyValueField(kunci:"Zodiac", value: aboutModel.profile!.zodiac!,type: 'text', enabled: false, onToggle: (){}, fontSize: 12),
@@ -135,7 +135,7 @@ class AboutEdit extends StatelessWidget {
                   ,type:  'height',
                   enabled: true,
                   onToggle: (){},
-                  fontSize: 12,
+                  fontSize: 13,
               ),
               KeyValueField(
                   kunci:"Weight",
@@ -143,7 +143,7 @@ class AboutEdit extends StatelessWidget {
                   type:  'weight',
                   enabled: true,
                   onToggle: (){},
-                  fontSize: 12,
+                  fontSize: 13,
               ),
             ],
           ),

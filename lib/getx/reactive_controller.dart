@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:youapp/models/aboutmodel.dart';
 
@@ -58,6 +60,12 @@ class ReactiveController extends GetxController{
     selectedZodiac.value = newZodiac;
   }
 
+  var profileImage = "".obs;
+
+  void updateProfileImage(String newImage){
+    profileImage.value = newImage;
+  }
+
   var selectedInterest= [].obs;
 
   void updateInterest(List<String> newInterest){
@@ -73,6 +81,12 @@ class ReactiveController extends GetxController{
     selectedWeight.value = 0;
     selectedInterest.value = [];
     changedAbout.value = false;
+  }
+
+  var pickedImage = "".obs;
+
+  void updateImage(String newImage){
+    pickedImage.value = newImage;
   }
 
 }

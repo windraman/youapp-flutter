@@ -160,7 +160,7 @@ class KeyValueField extends StatelessWidget {
           Expanded(
             flex: 5,
             child: SizedBox(
-              height: 40,
+              height: 45,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: Obx (() => DropdownSelect(
@@ -178,7 +178,7 @@ class KeyValueField extends StatelessWidget {
           Expanded(
             flex: 5,
             child: SizedBox(
-              height: 50,
+              height: 55,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: OutlinedButton(

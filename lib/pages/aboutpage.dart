@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:youapp/components/aboutedit.dart';
 import 'package:youapp/components/interstcard.dart';
 import 'package:youapp/getx/reactive_controller.dart';
@@ -54,6 +56,8 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   List<String> _selectedItems = [];
+
+  final _picker = ImagePicker();
 
   // void _loadUsers() async{
   //   var response = await apiService.fetchData("api/users");
@@ -112,7 +116,7 @@ class _AboutPageState extends State<AboutPage> {
     if(profile.toString() == aboutModel.profile!.toJson().toString()){
       log("No change");
     }else{
-      apiService.patch("api/users/profile", user);
+      // apiService.patch("api/users/profile", user);
     }
 
     reactiveController.resetAbout();
@@ -140,7 +144,8 @@ class _AboutPageState extends State<AboutPage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: const CircularProgressIndicator());
             } else if (snapshot.hasData) {
-              aboutModel = AboutModel.fromJson(json.decode(snapshot.data.toString()));
+              var jdata = json.decode(snapshot.data.toString());
+              aboutModel = AboutModel.fromJson(jdata);
               reactiveController.updateName(aboutModel.profile!.name.toString());
               reactiveController.updateBirthday(inputFormat.format(DateTime.parse(aboutModel.profile!.birthday.toString())).toString());
               reactiveController.updateGender(aboutModel.profile!.gender.toString());
@@ -149,6 +154,7 @@ class _AboutPageState extends State<AboutPage> {
               reactiveController.updateHoroscope(aboutModel.profile!.horoscope.toString());
               reactiveController.updateZodiac(aboutModel.profile!.zodiac.toString());
               reactiveController.updateInterest(aboutModel.profile!.interests!.toList());
+              reactiveController.updateProfileImage(jdata["profile"]["image"]);
               _selectedItems = aboutModel.profile!.interests!.toList();
               return Container(
                   decoration: const BoxDecoration(
@@ -192,7 +198,9 @@ class _AboutPageState extends State<AboutPage> {
                                       onToggle: () {
                                         _showDatePicker(context);
                                       },
-                                      updatedModel: (value) {},
+                                      onImagePicker: () {
+                                        pickImage();
+                                      },
                                     ),
                                 ],
                               ),
@@ -330,6 +338,22 @@ class _AboutPageState extends State<AboutPage> {
       // reactiveController.updateInterest(results);
       _updateProfile();
     }
+  }
+
+  File? _image;
+  XFile? _pickedFile;
+
+  pickImage() async{
+     final _pickeFile  = await _picker.pickImage(source: ImageSource.gallery) ;
+
+      if(_pickeFile!=null){
+        reactiveController.pickedImage(_pickeFile.path);
+        _image = File(reactiveController.pickedImage.value);
+        await apiService.updateProfileImage(_image!.path, "api/file-upload/upload", "profile");
+        setState(() {
+
+        });
+      }
   }
 }
 

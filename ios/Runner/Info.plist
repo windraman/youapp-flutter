@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pick an image from gallery</string>
+	<key>NSPhotoCameraUsageDescription</key>
+	<string>Pick an image from camera</string>
 </dict>
 </plist>

@@ -25,7 +25,7 @@ class ProfileBanner extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: NetworkImage('http://192.168.100.189:3000/${aboutModel.profile?.image}'),
+              image: NetworkImage('http://192.168.100.189:3000/${reactiveController.profileImage.value}'),
               fit: BoxFit.cover
           ),
           borderRadius: BorderRadius.circular(10.0),

@@ -18,11 +18,23 @@ class DropdownSelect extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      alignment: Alignment.bottomRight,
-      isExpanded: true,
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white12, // Background color
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(color: Colors.blue, width: 2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(color: Colors.grey, width: 1),
+        ),
+      ),
+      alignment: Alignment.centerRight,
+      isExpanded: false,
       style: TextStyle(
-        fontSize: 11,
+        fontSize: 13,
       ),
       value: selectedItem,
       icon: Icon(Icons.arrow_drop_down),
@@ -31,7 +43,7 @@ class DropdownSelect extends StatelessWidget{
           value: item,
           child: Text(
               item,
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.end,
           ),
         );
       }).toList(),
