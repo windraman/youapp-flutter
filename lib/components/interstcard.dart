@@ -1,11 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:youapp/components/multiselect.dart';
-import 'package:youapp/models/basemodel.dart';
 
-import '../models/aboutmodel.dart';
-import 'keyvaluetext.dart';
 
 class InterestCard extends StatelessWidget {
   const InterestCard({

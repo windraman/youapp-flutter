@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:youapp/components/passwordfield.dart';
-import 'package:youapp/getx/reactive_controller.dart';
-import 'package:youapp/models/aboutmodel.dart';
 import 'package:youapp/models/loginform.dart';
 import 'package:youapp/pages/aboutpage.dart';
 import 'package:youapp/pages/registerpage.dart';
@@ -13,7 +11,6 @@ import 'package:youapp/pages/registerpage.dart';
 import '../components/youbutton.dart';
 import '../components/youtextfield.dart';
 
-import 'package:http/http.dart' as http;
 
 import 'dart:developer';
 

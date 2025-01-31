@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../getx/reactive_controller.dart';
 import '../models/aboutmodel.dart';
@@ -20,7 +19,6 @@ class AboutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ReactiveController reactiveController = Get.put(ReactiveController());
-    var birthday = aboutModel.profile!.birthday!;
     // if(aboutModel.profile?.birthday != ""){
     //   birthday = DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString();
     // }

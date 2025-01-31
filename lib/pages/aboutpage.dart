@@ -1,32 +1,22 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:youapp/components/aboutedit.dart';
 import 'package:youapp/components/interstcard.dart';
 import 'package:youapp/getx/reactive_controller.dart';
 import 'package:youapp/models/aboutmodel.dart';
-import 'package:youapp/models/basemodel.dart';
-import 'package:youapp/models/loginform.dart';
-import 'package:youapp/pages/registerpage.dart';
 
 import '../components/aboutcard.dart';
-import '../components/keyvaluetext.dart';
 import '../components/multiselect.dart';
 import '../components/profilebanner.dart';
-import '../components/youbutton.dart';
-import '../components/youtextfield.dart';
 
-import 'package:http/http.dart' as http;
 
 import 'dart:developer';
 
-import 'package:flutter/services.dart' show rootBundle;
 
 import '../services/apiservice.dart';
 
@@ -66,46 +56,16 @@ class _AboutPageState extends State<AboutPage> {
 
   void _updateProfile() async{
     Map<String, dynamic>  profile = {};
-    if(reactiveController.selectedName.toString()!=""){
-      profile["name"] = reactiveController.selectedName.toString();
-    } else{
-      profile["name"] = aboutModel.profile?.name;
-    }
-    if(reactiveController.selectedGender.toString()!="Not Selected"){
-      profile["gender"] = reactiveController.selectedGender.toString();
-    }else{
-      profile["gender"] = aboutModel.profile?.gender;
-    }
-    if(reactiveController.selectedBirthday.toString()!=""){
-      profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
-    } else{
-      profile["birthday"] = aboutModel.profile?.birthday;
-    }
-    if(reactiveController.selectedHoroscope.toString()!=""){
-      profile["horoscope"] = reactiveController.selectedHoroscope.toString();
-    } else{
-      profile["horoscope"] = aboutModel.profile?.horoscope;
-    }
-    if(reactiveController.selectedZodiac.toString()!=""){
-      profile["zodiac"] = reactiveController.selectedZodiac.toString();
-    } else{
-      profile["zodiac"] = aboutModel.profile?.zodiac;
-    }
-    if(reactiveController.selectedHeight.toInt() > 0){
-      profile["height"] = reactiveController.selectedHeight.toInt();
-    }else{
-      profile["height"] = aboutModel.profile?.height;
-    }
-    if(reactiveController.selectedWeight.toInt()>0){
-      profile["weight"] = reactiveController.selectedWeight.toInt();
-    }else{
-      profile["weight"] = aboutModel.profile?.weight;
-    }
-    if(reactiveController.selectedInterest.isNotEmpty){
-      profile["interests"] = reactiveController.selectedInterest.toList();
-    }else{
-      profile["interests"] = aboutModel.profile?.interests;
-    }
+    profile["name"] = reactiveController.selectedName.toString();
+    profile["gender"] = reactiveController.selectedGender.toString();
+    profile["birthday"] = reformatDate(reactiveController.selectedBirthday.toString());
+    profile["horoscope"] = reactiveController.selectedHoroscope.toString();
+    profile["zodiac"] = reactiveController.selectedZodiac.toString();
+    profile["height"] = reactiveController.selectedHeight.toInt();
+    profile["weight"] = reactiveController.selectedWeight.toInt();
+    profile["interests"] = reactiveController.selectedInterest.toList();
+    profile["image"] = aboutModel.profile?.image;
+
     Map<String, dynamic>  user = {};
     user['profile'] = profile;
     log(profile.toString());
@@ -116,7 +76,7 @@ class _AboutPageState extends State<AboutPage> {
     if(profile.toString() == aboutModel.profile!.toJson().toString()){
       log("No change");
     }else{
-      // apiService.patch("api/users/profile", user);
+      apiService.patch("api/users/profile", user);
     }
 
     reactiveController.resetAbout();
@@ -154,7 +114,12 @@ class _AboutPageState extends State<AboutPage> {
               reactiveController.updateHoroscope(aboutModel.profile!.horoscope.toString());
               reactiveController.updateZodiac(aboutModel.profile!.zodiac.toString());
               reactiveController.updateInterest(aboutModel.profile!.interests!.toList());
-              reactiveController.updateProfileImage(jdata["profile"]["image"]);
+              if(jdata["profile"]["image"] != null) {
+                reactiveController.updateProfileImage(
+                    jdata["profile"]["image"]);
+              }else{
+                reactiveController.updateProfileImage(" ");
+              }
               _selectedItems = aboutModel.profile!.interests!.toList();
               return Container(
                   decoration: const BoxDecoration(
@@ -264,7 +229,7 @@ class _AboutPageState extends State<AboutPage> {
     DateTime initDate = DateTime.now();
     if(aboutModel.profile?.birthday != ""){
       initDate = DateTime.parse(aboutModel.profile!.birthday.toString());
-      var birthday = DateTime.parse(aboutModel.profile!.birthday.toString());
+      DateTime.parse(aboutModel.profile!.birthday.toString());
     }
     showCupertinoModalPopup(
       context: context,
@@ -325,6 +290,7 @@ class _AboutPageState extends State<AboutPage> {
       builder: (BuildContext context) {
         return MultiSelect(
             items: items,
+            // ignore: invalid_use_of_protected_member
             currentSelected: reactiveController.selectedInterest.value as List<String>
         );
       },
@@ -341,7 +307,6 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   File? _image;
-  XFile? _pickedFile;
 
   pickImage() async{
      final _pickeFile  = await _picker.pickImage(source: ImageSource.gallery) ;

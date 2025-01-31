@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import '../getx/reactive_controller.dart';
 
 class DropdownSelect extends StatelessWidget{
   const DropdownSelect({
@@ -32,7 +30,7 @@ class DropdownSelect extends StatelessWidget{
         ),
       ),
       alignment: Alignment.centerRight,
-      isExpanded: false,
+      isExpanded: true,
       style: TextStyle(
         fontSize: 13,
       ),

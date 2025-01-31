@@ -7,24 +7,26 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:youapp/main.dart';
+import 'package:youapp/services/apiservice.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Verify add user button present on ActiveUsers page',
+          (WidgetTester tester) async {
+        Get.lazyPut<ApiService>(() => ApiService());
+        await GetStorage.init();
+        //Arrange - Pump MyApp() widget to tester
+        await tester.pumpWidget(MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+        //Act - Find button by type
+        var fab = find.byType(ElevatedButton);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+        //Assert - Check that button widget is present
+        expect(fab, findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+      });
 }

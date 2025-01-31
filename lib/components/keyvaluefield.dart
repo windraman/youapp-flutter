@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youapp/components/dropdownselect.dart';
-import 'package:youapp/models/aboutmodel.dart';
 
 import '../getx/reactive_controller.dart';
 

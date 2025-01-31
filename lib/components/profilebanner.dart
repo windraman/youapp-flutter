@@ -61,7 +61,7 @@ class ProfileBanner extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "${aboutModel.profile?.gender}",
+                            reactiveController.selectedGender.value,
                           ),
                         ],
                       ),
@@ -124,8 +124,6 @@ class ProfileBanner extends StatelessWidget {
     DateTime now = DateTime.now();
     Duration age = now.difference(birth);
     int years = age.inDays ~/ 365;
-    int months = (age.inDays % 365) ~/ 30;
-    int days = ((age.inDays % 365) % 30);
     return years;
   }
 }
