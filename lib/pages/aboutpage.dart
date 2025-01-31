@@ -79,7 +79,6 @@ class _AboutPageState extends State<AboutPage> {
       widget.apiService.patch("api/users/profile", user);
     }
 
-    reactiveController.resetAbout();
   }
 
   @override

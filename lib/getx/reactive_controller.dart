@@ -43,28 +43,24 @@ class ReactiveController extends GetxController{
 
   void updateName(String newName){
     selectedName.value = newName;
-    changedAbout.value = true;
   }
 
   var selectedGender = "Not Selected".obs;
 
   void updateGender(String newGender){
     selectedGender.value = newGender;
-    changedAbout.value = true;
   }
 
   var selectedHeight = 0.obs;
 
   void updateHeight(int newHeight){
     selectedHeight.value = newHeight;
-    changedAbout.value = true;
   }
 
   var selectedWeight = 0.obs;
 
   void updateWeight(int newWeight){
     selectedWeight.value = newWeight;
-    changedAbout.value = true;
   }
 
   var selectedHoroscope = "".obs;
@@ -89,18 +85,8 @@ class ReactiveController extends GetxController{
 
   void updateInterest(List<String> newInterest){
     selectedInterest.value = newInterest;
-    changedAbout.value = true;
   }
 
-  void resetAbout(){
-    selectedName.value = "";
-    selectedBirthday.value = "";
-    selectedGender.value = "Not Selected";
-    selectedHeight.value = 0;
-    selectedWeight.value = 0;
-    selectedInterest.value = [];
-    changedAbout.value = false;
-  }
 
   var pickedImage = "".obs;
 
