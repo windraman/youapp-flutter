@@ -10,7 +10,7 @@ import 'package:youapp/services/apiservice.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Get.lazyPut<ApiService>(() => ApiService());
-  await GetStorage.init();
+  // await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final ApiService apiService = Get.find();
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'YouApp',
@@ -30,14 +31,11 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      // home: const LoginPage(
-      //     title: 'YouApp'
-      // ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(title: 'login'),
-        '/register': (context) => const RegisterPage(title: 'register'),
-        '/about': (context) => const AboutPage(title: 'about'),
+        '/': (context) => LoginPage(title: 'login', apiService: apiService),
+        '/register': (context) => RegisterPage(title: 'register', apiService: apiService),
+        '/about': (context) => AboutPage(title: 'about', apiService: apiService),
       },
     );
   }

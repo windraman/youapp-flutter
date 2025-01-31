@@ -12,21 +12,31 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:youapp/main.dart';
+import 'package:youapp/pages/aboutpage.dart';
+import 'package:youapp/pages/loginpage.dart';
 import 'package:youapp/services/apiservice.dart';
 
 void main() {
-  testWidgets('Verify add user button present on ActiveUsers page',
+  testWidgets('Verify Login Page Function',
           (WidgetTester tester) async {
-        Get.lazyPut<ApiService>(() => ApiService());
-        await GetStorage.init();
-        //Arrange - Pump MyApp() widget to tester
-        await tester.pumpWidget(MyApp());
+        ApiService apiService = ApiService();
+        await tester.pumpWidget(
+            GetMaterialApp(
+                home:  LoginPage(
+                    title: "login",
+                  apiService: apiService,
+                )
+            )
+        );
 
-        //Act - Find button by type
-        var fab = find.byType(ElevatedButton);
+        var fields = find.byType(TextField);
+        expect(fields, findsWidgets);
 
-        //Assert - Check that button widget is present
-        expect(fab, findsOneWidget);
+        var button = find.byType(ElevatedButton);
+        await tester.tap(button);
+
+        var snackBar = find.byType(ScaffoldMessenger);
+        expect(snackBar, findsOneWidget);
 
       });
 }

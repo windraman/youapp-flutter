@@ -4,27 +4,23 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:youapp/getx/reactive_controller.dart';
+import 'package:youapp/models/loginform.dart';
+import 'package:youapp/models/registerform.dart';
 
 class ApiService extends GetxService {
-  String token = "";
+  ReactiveController reactiveController = Get.put(ReactiveController());
 
   Uri _getUri(String endpoint) {
     return Uri.parse('http://192.168.100.189:3000/$endpoint');
   }
 
-  String _accessToken() {
-    return "";
-  }
-
-  void setToken(String token){
-    token = token;
-  }
 
   Map<String, String> _headers(String branch) {
     final box = GetStorage();
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer ${ box.read('token').toString()}",
+      "Authorization": "Bearer ${reactiveController.token.value}",
       "branch": branch,
     };
   }
@@ -124,5 +120,44 @@ class ApiService extends GetxService {
     _logResponse(uri, response);
 
     return response;
+  }
+
+  Future<String> login() async {
+    String passed = "";
+    LoginformModel loginFormModel = LoginformModel(email: reactiveController.email.value, password: reactiveController.password.value);
+
+    final response = await post('api/auth/login', loginFormModel);
+    Map<String, dynamic> result = await jsonDecode(response.body);
+
+    if(result.containsKey("token")){
+      reactiveController.setToken(result["token"]);
+      passed = "passed";
+    }else{
+      passed = response.body;
+    }
+
+    return passed;
+  }
+
+  Future<String> register() async {
+    String passed = "";
+    RegisterformModel loginFormModel = RegisterformModel(
+        email: reactiveController.email.value,
+        username: reactiveController.username.value,
+        password: reactiveController.password.value,
+        retype: reactiveController.retype.value
+    );
+
+    final response = await post('api/auth/register', loginFormModel);
+    Map<String, dynamic> result = jsonDecode(response.body);
+
+    if(result.containsKey("token")){
+      reactiveController.setToken(result["token"]);
+      passed = "passed";
+    }else{
+      passed = response.body;
+    }
+
+    return passed;
   }
 }

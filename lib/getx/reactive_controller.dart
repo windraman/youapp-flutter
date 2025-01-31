@@ -2,6 +2,30 @@
 import 'package:get/get.dart';
 
 class ReactiveController extends GetxController{
+  var email = ''.obs;
+
+  void setEmail(String newEmail){
+    email.value = newEmail;
+  }
+
+  var username = ''.obs;
+
+  void setUsername(String newUsername){
+    username.value = newUsername;
+  }
+
+  var password = ''.obs;
+
+  void setPassword(String newPassword){
+    password.value = newPassword;
+  }
+
+  var retype = ''.obs;
+
+  void setRetype(String newRetype){
+    retype.value = newRetype;
+  }
+
   var token = ''.obs;
 
   void setToken(String newToken){
