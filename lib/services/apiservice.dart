@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:youapp/getx/reactive_controller.dart';
@@ -17,7 +16,6 @@ class ApiService extends GetxService {
 
 
   Map<String, String> _headers(String branch) {
-    final box = GetStorage();
     return {
       "Content-Type": "application/json",
       "Authorization": "Bearer ${reactiveController.token.value}",
@@ -66,18 +64,6 @@ class ApiService extends GetxService {
     return _sendRequest(() => http.get(uri, headers: _headers("")), uri);
   }
 
-  Future<String> fetchData(String endpoint) async {
-    Uri uri = _getUri(endpoint);
-    final response = await http.get(uri, headers: _headers(""));
-
-    // Check the status code and return the body if successful
-    if (response.statusCode == 200) {
-      log(response.body);
-      return response.body; // Return the response body as a String
-    } else {
-      throw Exception('Request failed with status: ${response.statusCode}');
-    }
-  }
 
   Future<http.Response> post(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
@@ -159,5 +145,17 @@ class ApiService extends GetxService {
     }
 
     return passed;
+  }
+
+  Future<String> fetchData(String endpoint) async {
+    Uri uri = _getUri(endpoint);
+    final response = await http.get(uri, headers: _headers(""));
+
+    // Check the status code and return the body if successful
+    if (response.statusCode == 200) {
+      return response.body; // Return the response body as a String
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
   }
 }

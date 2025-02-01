@@ -1,3 +1,4 @@
+// ignore: unnecessary_import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -181,13 +182,13 @@ class KeyValueField extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: OutlinedButton(
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    style: OutlinedButton.styleFrom(
+                        shape:
                             RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),
                                 side: BorderSide(color: Colors.red)
                             )
-                        )
+
                     ),
                     onPressed: onToggle,
                     child:

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -71,20 +73,13 @@ class AboutEdit extends StatelessWidget {
                           onPressed: (){
                             onImagePicker();
                           },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith((states) {
-                              // If the button is pressed, return green, otherwise blue
-                              if (states.contains(MaterialState.pressed)) {
-                                return Colors.green;
-                              }
-                              return Colors.transparent;
-                            }),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                              shape:
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5.0),
                                       side: BorderSide(color: Colors.transparent)
                                   )
-                              )
                           ),
                           icon: Icon(
                             size: 30,

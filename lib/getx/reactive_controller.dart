@@ -1,5 +1,6 @@
 
 import 'package:get/get.dart';
+import 'package:youapp/models/aboutmodel.dart';
 
 class ReactiveController extends GetxController{
   var email = ''.obs;
@@ -32,7 +33,12 @@ class ReactiveController extends GetxController{
     token.value = newToken;
   }
 
-  var changedAbout = false.obs;
+  var aboutModel = AboutModel().obs;
+
+  void updateAboutModel (AboutModel newAboutModel) {
+    aboutModel.value = newAboutModel;
+  }
+
   var selectedBirthday = "".obs;
 
   void updateBirthday(String newBirthday){

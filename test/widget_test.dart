@@ -9,10 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get_storage/get_storage.dart';
 
-import 'package:youapp/main.dart';
-import 'package:youapp/pages/aboutpage.dart';
 import 'package:youapp/pages/loginpage.dart';
 import 'package:youapp/services/apiservice.dart';
 
