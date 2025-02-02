@@ -1,27 +1,23 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:youapp/components/passwordfield.dart';
 import 'package:youapp/getx/reactive_controller.dart';
 import 'package:youapp/pages/aboutpage.dart';
 import 'package:youapp/pages/registerpage.dart';
-
 import '../components/youbutton.dart';
 import '../components/youtextfield.dart';
-
-
-
 import '../services/apiservice.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
     super.key,
-    required this.title,
-    required this.apiService
+    required this.title
   });
 
   final String title;
-  final ApiService apiService;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -38,11 +34,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    final response = await widget.apiService.login();
+    final ApiService apiService = Get.find();
+    final response = await apiService.login();
     if (!mounted) return;
 
     if(response=="passed"){
-      Get.to(() => AboutPage(title: "About", apiService: widget.apiService));
+      Get.to(() => AboutPage(title: "About"));
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response)),
@@ -121,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                         const Text("No Account ?"),
                         TextButton(
                             onPressed: () {
-                              Get.to(RegisterPage(title: "register", apiService: widget.apiService));
+                              Get.to(RegisterPage(title: "register"));
                             },
                             child: const Text("register here")
                         )

@@ -41,6 +41,8 @@ dependencies:
   multi_dropdown: ^3.0.1
   get:
   image_picker: ^1.1.2
+  mockito: ^5.4.4
+  build_runner: ^2.4.13
 
 dev_dependencies:
   flutter_test:

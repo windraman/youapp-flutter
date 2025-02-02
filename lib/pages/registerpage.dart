@@ -16,12 +16,10 @@ import '../services/apiservice.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
     super.key,
-    required this.title,
-    required this.apiService
+    required this.title
   });
 
   final String title;
-  final ApiService apiService;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -29,6 +27,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   ReactiveController reactiveController = Get.put(ReactiveController());
+  final ApiService apiService = Get.find();
   bool _obscureText = true;
 
   void _togglePasswordView() {
@@ -39,11 +38,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _register() async {
     // if(formModel.password.toString() == formModel.retype.toString()) {
-      final response = await widget.apiService.register();
+      final response = await apiService.register();
       if (!mounted) return;
 
       if(response=="passed"){
-        Get.to(() => AboutPage(title: "About", apiService: widget.apiService));
+        Get.to(() => AboutPage(title: "About"));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response)),
@@ -142,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           const Text("Have an Account?"),
                           TextButton(
                               onPressed: () {
-                                Get.to(LoginPage(title: "login", apiService: widget.apiService));
+                                Get.to(LoginPage(title: "login"));
                               },
                               child: const Text("Login here")
                           )

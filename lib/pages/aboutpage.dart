@@ -26,12 +26,10 @@ import 'package:intl/intl.dart';
 class AboutPage extends StatefulWidget {
   const AboutPage({
     super.key,
-    required this.title,
-    required this.apiService
+    required this.title
   });
 
   final String title;
-  final ApiService apiService;
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -39,6 +37,7 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   ReactiveController reactiveController = Get.put(ReactiveController());
+  final ApiService apiService = Get.find();
   AboutModel aboutModel = AboutModel();
 
   bool _isEdit = false;
@@ -55,6 +54,7 @@ class _AboutPageState extends State<AboutPage> {
   final _picker = ImagePicker();
 
   void _updateProfile() async{
+    AboutModel updatedProfile = AboutModel();
     Map<String, dynamic>  profile = {};
     profile["name"] = reactiveController.selectedName.toString();
     profile["gender"] = reactiveController.selectedGender.toString();
@@ -71,12 +71,10 @@ class _AboutPageState extends State<AboutPage> {
     log(profile.toString());
     log(aboutModel.profile!.toJson().toString());
 
-    log((profile.toString()==aboutModel.profile!.toJson().toString()).toString());
-
     if(profile.toString() == aboutModel.profile!.toJson().toString()){
       log("No change");
     }else{
-      widget.apiService.patch("api/users/profile", user);
+      apiService.patch("api/users/profile", user);
     }
 
   }
@@ -97,7 +95,7 @@ class _AboutPageState extends State<AboutPage> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder<String>(
-          future: widget.apiService.fetchData("api/users"),
+          future: apiService.fetchData("api/users"),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: const CircularProgressIndicator());
@@ -315,7 +313,7 @@ class _AboutPageState extends State<AboutPage> {
       if(_pickeFile!=null){
         reactiveController.pickedImage(_pickeFile.path);
         _image = File(reactiveController.pickedImage.value);
-        await widget.apiService.updateProfileImage(_image!.path, "api/file-upload/upload", "profile");
+        await apiService.updateProfileImage(_image!.path, "api/file-upload/upload", "profile");
         setState(() {
 
         });

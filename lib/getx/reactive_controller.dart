@@ -1,5 +1,6 @@
 
 import 'package:get/get.dart';
+// ignore: unused_import
 import 'package:youapp/models/aboutmodel.dart';
 
 class ReactiveController extends GetxController{
@@ -31,12 +32,6 @@ class ReactiveController extends GetxController{
 
   void setToken(String newToken){
     token.value = newToken;
-  }
-
-  var aboutModel = AboutModel().obs;
-
-  void updateAboutModel (AboutModel newAboutModel) {
-    aboutModel.value = newAboutModel;
   }
 
   var selectedBirthday = "".obs;

@@ -20,9 +20,6 @@ class AboutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ReactiveController reactiveController = Get.put(ReactiveController());
-    // if(aboutModel.profile?.birthday != ""){
-    //   birthday = DateFormat.yMd().format(DateTime.parse(aboutModel.profile!.birthday!)).toString();
-    // }
     return Column(
       children: [
         Padding(

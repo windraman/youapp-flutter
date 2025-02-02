@@ -4,14 +4,25 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:youapp/getx/reactive_controller.dart';
+import 'package:youapp/models/basemodel.dart';
 import 'package:youapp/models/loginform.dart';
 import 'package:youapp/models/registerform.dart';
 
 class ApiService extends GetxService {
+  final http.Client client;
+
+  ApiService({http.Client? client}) : client = client ?? Get.find<http.Client>();
+
+  String host = "http://192.168.100.189:3000";
   ReactiveController reactiveController = Get.put(ReactiveController());
 
+  void close() {
+    client.close();
+    super.onClose();
+  }
+
   Uri _getUri(String endpoint) {
-    return Uri.parse('http://192.168.100.189:3000/$endpoint');
+    return Uri.parse('$host/$endpoint');
   }
 
 
@@ -24,8 +35,11 @@ class ApiService extends GetxService {
   }
 
   Future<http.Response> _sendRequest(
-      Future<http.Response> Function() requestFunc, Uri uri,
-      {dynamic body}) async {
+      Future<http.Response> Function() requestFunc,
+      Uri uri,
+      {dynamic body}
+      ) async {
+
     try {
       _logRequest(uri, body);
       final response = await requestFunc();
@@ -61,33 +75,33 @@ class ApiService extends GetxService {
 
   Future<http.Response> get(String endpoint) async {
     Uri uri = _getUri(endpoint);
-    return _sendRequest(() => http.get(uri, headers: _headers("")), uri);
+    return _sendRequest(() => client.get(uri, headers: _headers("")), uri);
   }
 
 
   Future<http.Response> post(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
-    return _sendRequest(() => http.post(uri, headers: _headers(""), body: jsonEncode(body)), uri, body: body);
+    return _sendRequest(() => client.post(uri, headers: _headers(""), body: jsonEncode(body)), uri, body: body);
   }
 
   Future<http.Response> put(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
     return _sendRequest(
-            () => http.put(uri, headers: _headers(""), body: jsonEncode(body)), uri,
+            () => client.put(uri, headers: _headers(""), body: jsonEncode(body)), uri,
         body: body);
   }
 
   Future<http.Response> patch(String endpoint, dynamic body) async {
     Uri uri = _getUri(endpoint);
     return _sendRequest(
-            () => http.patch(uri, headers: _headers(""), body: jsonEncode(body)), uri,
+            () => client.patch(uri, headers: _headers(""), body: jsonEncode(body)), uri,
         body: body);
   }
 
   Future<http.Response> delete(String endpoint, {dynamic body}) async {
     Uri uri = _getUri(endpoint);
     return _sendRequest(
-            () => http.delete(uri, headers: _headers(""), body: jsonEncode(body)),
+            () => client.delete(uri, headers: _headers(""), body: jsonEncode(body)),
         uri,
         body: body);
   }
@@ -113,13 +127,21 @@ class ApiService extends GetxService {
     LoginformModel loginFormModel = LoginformModel(email: reactiveController.email.value, password: reactiveController.password.value);
 
     final response = await post('api/auth/login', loginFormModel);
-    Map<String, dynamic> result = await jsonDecode(response.body);
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      try {
+        final result = jsonDecode(response.body);
 
-    if(result.containsKey("token")){
-      reactiveController.setToken(result["token"]);
-      passed = "passed";
-    }else{
-      passed = response.body;
+        if(result.containsKey("token")){
+          reactiveController.setToken(result["token"]);
+          passed = "passed";
+        }else{
+          passed = response.body;
+        }
+      } catch (e) {
+        throw Exception('Failed to decode response body $e');
+      }
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
     }
 
     return passed;
@@ -157,5 +179,12 @@ class ApiService extends GetxService {
     } else {
       throw Exception('Request failed with status: ${response.statusCode}');
     }
+  }
+
+  Future<http.Response> test() async {
+    Uri uri = _getUri("endpoint");
+    final response = await http.post(uri, headers: _headers(""));
+
+    return response;
   }
 }
